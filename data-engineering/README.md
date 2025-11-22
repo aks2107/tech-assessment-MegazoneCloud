@@ -5,14 +5,18 @@
 ## How to Run Locally
 
 1. Make sure Python 3 is installed on your computer.
-2. Clone the repo with the following commands:
+2. Clone the repo with the following command:
     ```text
     git clone https://github.com/aks2107/tech-assessment.git
+    ```
+3. Go to the correct project directory:
+   ```text
     cd technical-assessment-2025/data-engineering
-4. Make sure the data directory contains the following:
-    memberInfo.csv
-    memberPaidInfo.csv
-5. Run the script with the following command:
+    ```
+5. Make sure the data directory contains the following:
+   - memberInfo.csv 
+   - memberPaidInfo.csv
+6. Run the script with the following command:
     ```text
     python script.py
     ```
@@ -30,5 +34,5 @@ data-engineering/
 ```
 
 ### Contact Information
-Email: abinswar7@gmail.com
-LinkedIn: https://www.linkedin.com/in/aveinn-swar/
+- Email: abinswar7@gmail.com
+- LinkedIn: https://www.linkedin.com/in/aveinn-swar/
