@@ -6,13 +6,16 @@
 
 1. Make sure Python 3 is installed on your computer.
 2. Clone the repo with the following commands:
-    'git clone https://github.com/aks2107/tech-assessment.git'
-    'cd technical-assessment-2025/data-engineering'
-3. Make sure the data directory contains the following:
+    ```text
+    git clone https://github.com/aks2107/tech-assessment.git
+    cd technical-assessment-2025/data-engineering
+4. Make sure the data directory contains the following:
     memberInfo.csv
     memberPaidInfo.csv
-4. Run the script with the following command:
-    'python script.py'
+5. Run the script with the following command:
+    ```text
+    python script.py
+    ```
 
 ## Project Structure
 ```text
