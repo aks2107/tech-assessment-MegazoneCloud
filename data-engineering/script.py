@@ -66,6 +66,17 @@ def read_member_paid_info():
     return transactions
 
 def main():
+    """
+    This function is the main function that does the following:
+    1. Checks if the required directories and files exist
+    2. Gets list of transactions
+    3. Goes through list of transactions and finds if the member name and member ID exist
+    4. Gets total paid amount
+    5. Gets highest paying member
+    6. Creates output file with the clean data
+    7. Prints out some insights about the clean data
+    """
+    
     check_directories() # Check to make sure directories and files exist before moving on
     members = read_member_info() # Get dictionary of members
     transactions = read_member_paid_info() # Get list of transactions
