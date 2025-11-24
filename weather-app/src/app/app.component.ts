@@ -80,4 +80,17 @@ export class AppComponent implements OnInit { // Make class available to other f
     });
   }
 
-  
+  // This method is used to switch between Celsius and Fahrenheit
+  toggleTemperatureUnit() {
+    this.isCelsius = !this.isCelsius;
+  }
+
+  // This method handles the function of when a user clicks search after typing in a city
+  onSearch() {
+    if (this.searchQuery.trim()) {
+      this.loadWeatherByCity(this.searchQuery.trim());
+    }
+  }
+}
+
+
