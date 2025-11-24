@@ -11,7 +11,6 @@ interface WeatherData {
   // Information about location and the place
   location: {
     name: string; // Name of city
-    region: string; // Name of region
     country: string; // Name of country
   };
   // Information about current temperature in Celsius and Fahrenheit
