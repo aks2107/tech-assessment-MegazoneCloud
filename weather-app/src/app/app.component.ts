@@ -10,33 +10,74 @@ This is the interface which defines the data to get from weather API.
 interface WeatherData {
   // Information about location and the place
   location: {
-    name: string;
-    region: string;
-    country: string;
+    name: string; // Name of city
+    region: string; // Name of region
+    country: string; // Name of country
   };
-  // Information about current temperature in Celisius and Fahreinheit
-  // Icon and icon description based on current temperature
+  // Information about current temperature in Celsius and Fahrenheit
+  // Icon image and icon description based on current temperature
   current: {
-    temp_c: number;
-    temp_f: number;
+    temp_c: number; // Celsius temp
+    temp_f: number; // Fahrenheit temp
     condition: {
-      text: string;
-      icon: string;
+      text: string; // Icon description
+      icon: string; // Icon image
     };
   };
-  // Temperature forecast for the next day in Celisius and Fahreinheit
-  // Icon and icon description based on tommorow's temperature
+  // Temperature forecast for the future in Celsius and Fahrenheit
+  // Icon image and icon description based on future temperature
   forecast: {
     forecastday: Array<{
-      date: string;
+      date: string; // Date of forecast
       day: {
-        avg_c: number;
-        avg_f: number;
+        avg_c: number; // Average Celsius temp
+        avg_f: number; // Average Fahrenheit temp
         condition: {
-          text: string;
-          icon: string;
+          text: string; // Icon description
+          icon: string; // Icon image
         };
       };
     }>;
   };
 }
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './app.component.html',
+})
+
+export class AppComponent implements OnInit { // Make class available to other files
+  weatherData: WeatherData | null = null; 
+  isCelsius: boolean = true;
+  loading: boolean = false; // check for loading data
+  error: string = ''; 
+  searchQuery: string = ''; // storing input from user
+
+  private apiUrl = environment.weatherApiUrl; // gets API url from environment file
+  private apiKey = environment.weatherApiKey; // get API key from environment file
+
+  constructor(private http: HttpClient) {}
+
+  // This method takes a city inputted by the user and gets weather data from API
+  loadWeatherByCity(city: string){
+    this.loading = true;
+    this.error = '';
+
+    this.http.get<WeatherData>( // HTTP get request to get data
+      `${this.apiUrl}/forecast.json?key=${this.apiKey}&q=${city}&days=2&aqi=no&alerts=no` // API URL to get data for current day and next day
+    ).subscribe({ // Waits for data to be received
+      next: (data) => { // If the API call worked then there is weather information
+        this.weatherData = data;
+        this.loading = false;
+      },
+      error: (err) => { // If API call failed then we print out error message
+        this.error = 'Failed to load weather data. Please try again.';
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  
