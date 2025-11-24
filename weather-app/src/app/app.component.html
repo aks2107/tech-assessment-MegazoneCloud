@@ -5,3 +5,12 @@
       Switch to {{ isCelsius ? 'Fahrenheit' : 'Celsius' }}
     </button>
   </header>
+
+  <div class="flex flex-col sm:flex-row gap-4 mb-10 max-w-5xl mx-auto">
+    <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" placeholder="Enter city name here:" class="flex-1 px-8 py-6 border-2 border-gray-300 rounded-2xl text-2xl focus:outline-none focus:border-blue-500 transition-colors duration-300 placeholder:text-gray-400">
+    <button (click)="onSearch()" class="bg-green-500 hover:bg-green-600 text-white font-medium px-8 py-4 rounded-lg text-base transition-colors duration-300 w-full sm:w-auto">
+      Search
+    </button>
+  </div>
+
+  
