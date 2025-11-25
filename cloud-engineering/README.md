@@ -1,6 +1,30 @@
 # Secure and Scalable Multi-Tier VPC Foundation
 This project uses Terraform to deploy a production-grade, 3-tier network architecture (Web, App, Data) in AWS. Terraform is used to define the Infrastructure as Code (IaC) and is designed for High Availability across two Availability Zones and implements network isolation.
 
+## How to Run Locally
+
+Prerequisites: 
+- Terraform installion 
+- AWS CLI configuration with valid credentials
+
+1. Initialize Terraform:
+    ```
+    terraform init
+    ```
+2. Terraform Plan:
+    ```
+    terraform plan
+    ```
+3. Deploy:
+    ```
+    terraform apply
+    yes
+    ```
+4. End processes:
+    ```
+    terraform destroy
+    ```
+
 ## Architecture Diagram
 ```mermaid
 graph TB
