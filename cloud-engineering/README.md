@@ -4,78 +4,59 @@ This project uses Terraform to deploy a production-grade, 3-tier network archite
 ## Architecture Diagram
 ```mermaid
 graph TB
-    subgraph "AWS Cloud - Region: us-east-1"
-        subgraph "Production VPC - 10.0.0.0/16"
-            IGW[Internet Gateway<br/>Gateway to Internet]
-            
-            subgraph "Availability Zone 1 - us-east-1a"
-                subgraph "TIER 1: Public Subnet 1<br/>10.0.0.0/24<br/>ACL: Public NACL"
-                    NAT1[NAT Gateway 1<br/>Elastic IP Allocated]
-                    BASTION[Bastion Host<br/>Amazon Linux 2023<br/>t2.micro]
-                end
-                
-                subgraph "TIER 2: Private App Subnet 1<br/>10.0.2.0/24<br/>ACL: Private NACL"
-                    APP1[Application Tier 1<br/>Future App Servers]
-                end
-                
-                subgraph "TIER 3: Private Data Subnet 1<br/>10.0.4.0/24<br/>ACL: Private NACL"
-                    DB1[Data Tier 1<br/>Future RDS Instance]
-                end
-            end
-            
-            subgraph "Availability Zone 2 - us-east-1b"
-                subgraph "TIER 1: Public Subnet 2<br/>10.0.1.0/24<br/>ACL: Public NACL"
-                    NAT2[NAT Gateway 2<br/>Elastic IP Allocated]
-                    ALB_NODE[Load Balancer Node]
-                end
-                
-                subgraph "TIER 2: Private App Subnet 2<br/>10.0.3.0/24<br/>ACL: Private NACL"
-                    APP2[Application Tier 2<br/>Future App Servers]
-                end
-                
-                subgraph "TIER 3: Private Data Subnet 2<br/>10.0.5.0/24<br/>ACL: Private NACL"
-                    DB2[Data Tier 2<br/>Future RDS Standby]
-                end
-            end
+    %% --- AZ 1 ---
+    subgraph "Availability Zone 1 (us-east-1a)"
+        direction TB
+        subgraph "Public Subnet 1 (10.0.0.0/24)"
+            NAT1[NAT Gateway 1]
+            BASTION[Bastion Host]
+        end
+        
+        subgraph "App Subnet 1 (10.0.2.0/24)"
+            APP1[App Tier 1]
+        end
+        
+        subgraph "Data Subnet 1 (10.0.4.0/24)"
+            DB1[Data Tier 1]
         end
     end
     
-    %% Traffic Flows
-    INTERNET[Internet] ==>|HTTPS 443| IGW
-    INTERNET ==>|SSH 22 Restricted| IGW
-    
-    IGW -->|Route Table: Public| BASTION
-    IGW -->|Route Table: Public| ALB_NODE
-    IGW -->|Route Table: Public| NAT1
-    IGW -->|Route Table: Public| NAT2
-    
-    %% Bastion Access
-    BASTION -.->|SSH 22| APP1
-    BASTION -.->|SSH 22| APP2
-    BASTION -.->|SSH 22| DB1
-    BASTION -.->|SSH 22| DB2
-    
-    %% Application Flow
-    ALB_NODE -.->|HTTPS 443| APP1
-    ALB_NODE -.->|HTTPS 443| APP2
-    
-    APP1 -.->|MySQL 3306| DB1
-    APP2 -.->|MySQL 3306| DB2
-    
-    %% Updates Flow (Outbound)
-    APP1 -->|Route Table: Private| NAT1
-    APP2 -->|Route Table: Private| NAT2
-    
-    NAT1 --> IGW
-    NAT2 --> IGW
-    
-    %% Styles
+    %% --- AZ 2 ---
+    subgraph "Availability Zone 2 (us-east-1b)"
+        direction TB
+        subgraph "Public Subnet 2 (10.0.1.0/24)"
+            NAT2[NAT Gateway 2]
+            ALB_NODE[Load Balancer]
+        end
+        
+        subgraph "App Subnet 2 (10.0.3.0/24)"
+            APP2[App Tier 2]
+        end
+        
+        subgraph "Data Subnet 2 (10.0.5.0/24)"
+            DB2[Data Tier 2]
+        end
+    end
+
+    %% --- External ---
+    INTERNET((Internet)) ==>|HTTPS 443| IGW[Internet Gateway]
+    IGW --> NAT1 & NAT2
+    IGW --> BASTION & ALB_NODE
+
+    %% --- Internal Traffic ---
+    BASTION -.->|SSH 22| APP1 & APP2 & DB1 & DB2
+    ALB_NODE -.->|HTTPS 443| APP1 & APP2
+    APP1 & APP2 -.->|MySQL 3306| DB1 & DB2
+
+    %% --- Outbound Updates ---
+    APP1 & APP2 -->|Updates| NAT1 & NAT2
+
+    %% --- Styling ---
     classDef public fill:#E1F5FE,stroke:#0277BD,stroke-width:2px,color:#000
     classDef private fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#000
     classDef data fill:#E8EAF6,stroke:#283593,stroke-width:2px,color:#000
-    classDef security fill:#FCE4EC,stroke:#C2185B,stroke-width:2px,stroke-dasharray: 5 5,color:#000
     
-    class BASTION,NAT1,NAT2,ALB_NODE public
+    class BASTION,NAT1,NAT2,ALB_NODE,IGW public
     class APP1,APP2 private
     class DB1,DB2 data
 ```
