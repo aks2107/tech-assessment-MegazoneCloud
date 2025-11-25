@@ -2,7 +2,7 @@
 This project uses Terraform to deploy a production-grade, 3-tier network architecture (Web, App, Data) in AWS. Terraform is used to define the Infrastructure as Code (IaC) and is designed for High Availability across two Availability Zones and implements network isolation.
 
 ## Architecture Diagram
-```
+```mermaid
 graph TB
     subgraph "AWS Cloud - Region: us-east-1"
         subgraph "Production VPC - 10.0.0.0/16"
